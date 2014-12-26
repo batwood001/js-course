@@ -18,3 +18,17 @@ var displayBoard = function () {
     console.log(numToChar[i] + " |" + board[i].join(" "));
   }
 };
+
+var getMove = function() {
+  displayBoard();
+  var row1 = numToChar.indexOf(prompt(currentPlayer + "'s move: please enter the row of piece to move:"));
+  var col1 = parseInt(prompt("and the column:"));
+  var row2 = numToChar.indexOf(prompt("And the row of the destination:"));
+  var col2 = parseInt(prompt("And the column of the destination:"));
+  attemptMove(row1, col1, row2, col2);
+}
+
+var play = function() {
+  resetBoard();
+  getMove();
+}
