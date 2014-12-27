@@ -15,6 +15,7 @@ var resetBoard = function () {
   currentPlayer = 'wht'
 };
 
+
 var enemyPlayer = function(currentPlayer) {
   if (currentPlayer === 'wht') {
     return 'red'
@@ -32,7 +33,7 @@ var makeMove = function (row1, col1, row2, col2) {
   currentPlayer = enemyPlayer(currentPlayer); // Change players
   console.log(board)
   $(document).trigger("boardChange", [board]);
-  getMove();
+  // getMove();
 }
 
 var removePiece = function (row, col) {
@@ -42,7 +43,7 @@ var removePiece = function (row, col) {
 }
 
 var attemptMove = function (row1, col1, row2, col2) {
-  console.log("attemptMove called");
+  console.log("attemptMove called with params: " + row1 + col1 + row2 + col2);
   if (board[row1][col1] === currentPlayer) {  // if the selected position belongs to the player
     console.log("current player is white; white piece selected");
     if (board[row2][col2] === " X ") { // if the position to be moved to is empty
