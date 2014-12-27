@@ -1,3 +1,5 @@
+var turns
+
 var numToChar = ["a", "b", "c", "d", "e", "f", "g", "h"];
 var charToNum = {
   a: 0,
@@ -29,6 +31,7 @@ var getMove = function() {
 }
 
 var play = function() {
+  turns = 0;
   resetBoard();
   getMove();
 }

@@ -23,7 +23,7 @@ var enemyPlayer = function(currentPlayer) {
   }
 }
 
-var $invalid = $(document).trigger("invalidMove", "There is no enemy piece to take!")
+var $invalid = $(document).trigger("invalidMove")
 
 var makeMove = function (row1, col1, row2, col2) {
   console.log("makeMove called")
