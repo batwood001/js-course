@@ -1,4 +1,5 @@
 var numToChar = ["a", "b", "c", "d", "e", "f", "g", "h"];
+var games = 0;
 var clicks = 0;
 var col, row, col1, row1
 var $showPieces = function(board) {
@@ -16,7 +17,13 @@ var $showPieces = function(board) {
 $(document).ready(function(e) {
 
 	$(".start").click(function(e){
+		games += 1;
 		e.preventDefault();
+		$(".col").children().remove();
+		$(".gamecounter").html("Games: " + games);
+		$(".turncounter").html("Turns: 0");
+		$(".capturedWhite").children().remove();
+		$(".capturedRed").children().remove();
 		resetBoard();
 		turns = 0;
 		displayBoard();
@@ -34,12 +41,19 @@ $(document).ready(function(e) {
 	$(document).on("pieceTaken", function (e, currentPlayer, enemyPlayer, row, col) {
 		e.preventDefault();
 		alert(enemyPlayer + " took " + currentPlayer + "'s piece at location " + row + ", " + col + "!");
+		if (currentPlayer === "wht") {
+			$(".capturedWhite").append("<div class='captured red'></div>")
+		} else {
+			$(".capturedRed").append("<div class='captured white'></div>")
+		}
+		
 	})
 
 	$(document).on("invalidMove", function(e){
 		e.preventDefault();
 		alert("That's not a valid move!")
 	})
+
 
 	$( ".col" ).click(function(e) {
 	  col = parseInt(this.className[8]);
@@ -49,17 +63,21 @@ $(document).ready(function(e) {
 	$( ".row" ).click(function(e) {
 	  row = numToChar.indexOf(this.className[8]);
 	  console.log("row = " + row)
-	  clicks += 1
-	  if (clicks === 2) {
-	  	console.log("2 clicks; col1 = " + col1 + ", row1 = " + row1 + ", col = " + col + ", row = " + row)
-	  	attemptMove(row1, col1, row, col);
-	  	clicks = 0;
-	  } else {
-	  	col1 = col;
-	  	row1 = row;
-	  	console.log("col1this = " + col1 + ", row1this = " + row1);
-	  }	
+	  registerClick();
 	})
 
 })
+
+function registerClick() {
+	clicks += 1
+	if (clicks === 2) {
+	  	console.log("2 clicks; col1 = " + col1 + ", row1 = " + row1 + ", col = " + col + ", row = " + row)
+	  	attemptMove(row1, col1, row, col);
+	  	clicks = 0;
+	} else {
+	  	col1 = col;
+	  	row1 = row;
+	  	console.log("col1this = " + col1 + ", row1this = " + row1);
+	}	
+}
 
