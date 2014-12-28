@@ -1,4 +1,5 @@
 var numToChar = ["a", "b", "c", "d", "e", "f", "g", "h"];
+var moveSequence = [];
 var games = 0;
 var clicks = 0;
 var col, row, col1, row1
@@ -49,9 +50,9 @@ $(document).ready(function(e) {
 		
 	})
 
-	$(document).on("invalidMove", function(e){
+	$(document).on("invalidMove", function(e, args){
 		e.preventDefault();
-		alert("That's not a valid move!")
+		alert(args)
 	})
 
 
@@ -62,11 +63,19 @@ $(document).ready(function(e) {
 
 	$( ".row" ).click(function(e) {
 	  row = numToChar.indexOf(this.className[8]);
-	  console.log("row = " + row)
-	  registerClick();
+	  console.log("row = " + row);
+	  registerClick([row, col]);
 	})
 
 })
+
+
+
+// function registerClick (position) {
+
+// }
+
+
 
 function registerClick() {
 	clicks += 1
