@@ -15,9 +15,6 @@ var resetBoard = function () {
   currentPlayer = 'wht'
 };
 
-
-var $invalid = $(document).trigger("invalidMove")
-
 var enemyPlayer = function(currentPlayer) {
   if (currentPlayer === 'wht') {
     return 'red'
@@ -30,7 +27,7 @@ var makeMove = function (row1, col1, row2, col2) {
   console.log("makeMove called")
   board[row1][col1] = " X ";
   board[row2][col2] = currentPlayer;
-  currentPlayer = enemyPlayer(currentPlayer);       // Change players
+  // currentPlayer = enemyPlayer(currentPlayer);       // Change players
   console.log(board)
   $(document).trigger("boardChange", [board]);
   // getMove();

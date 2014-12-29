@@ -64,29 +64,46 @@ $(document).ready(function(e) {
 	$( ".row" ).click(function(e) {
 	  row = numToChar.indexOf(this.className[8]);
 	  console.log("row = " + row);
-	  registerClick([row, col]);
+	  registerClick(row, col);
 	})
 
 })
 
 
 
-// function registerClick (position) {
-
-// }
-
-
-
-function registerClick() {
-	clicks += 1
-	if (clicks === 2) {
-	  	console.log("2 clicks; col1 = " + col1 + ", row1 = " + row1 + ", col = " + col + ", row = " + row)
-	  	attemptMove(row1, col1, row, col);
-	  	clicks = 0;
-	} else {
-	  	col1 = col;
-	  	row1 = row;
-	  	console.log("col1this = " + col1 + ", row1this = " + row1);
-	}	
+function registerClick (row, col) {
+	moveSequence.push(row);
+	moveSequence.push(col);
+	if (moveSequence.length >= 4) {
+		console.log("Here's the moveSequence: " + moveSequence)
+		if (moveSequence[moveSequence.length - 1] === moveSequence[moveSequence.length - 3] && moveSequence[moveSequence.length - 2] === moveSequence[moveSequence.length - 4]) {
+			console.log("the thing worked")
+			if (isValidOneSquareMove(moveSequence[0], moveSequence[1], moveSequence[2], moveSequence[3])) {
+				attemptMove(moveSequence[0], moveSequence[1], moveSequence[2], moveSequence[3])
+			} else {
+			for (i = 0; i < moveSequence.length - 4; i += 2) {
+				console.log("The moveSequence iterator running")
+				attemptMove(moveSequence[i], moveSequence[i + 1], moveSequence[i + 2], moveSequence[i + 3])
+				} 
+			}
+		moveSequence = [];
+		currentPlayer = enemyPlayer(currentPlayer);	
+		}  
+	}
 }
+
+
+
+// function registerClick() {
+// 	clicks += 1
+// 	if (clicks === 2) {
+// 	  	console.log("2 clicks; col1 = " + col1 + ", row1 = " + row1 + ", col = " + col + ", row = " + row)
+// 	  	attemptMove(row1, col1, row, col);
+// 	  	clicks = 0;
+// 	} else {
+// 	  	col1 = col;
+// 	  	row1 = row;
+// 	  	console.log("col1this = " + col1 + ", row1this = " + row1);
+// 	}	
+// }
 
