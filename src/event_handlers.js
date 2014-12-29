@@ -55,6 +55,21 @@ $(document).ready(function(e) {
 		alert(args)
 	})
 
+	$(document).mousemove(function (e){
+  		$(".mousemove").css({
+    		left: e.pageX - 15,
+    		top: e.pageY - 20
+  		});
+  	});
+
+	$(document).on("grabPiece", function (e, row, col) {
+		e.preventDefault();
+		if (currentPlayer === "wht") {
+			$( "body" ).append("<div class='mousemove whitepiece'></div>")
+		} else {
+			$( "body" ).append("<div class='mousemove redpiece'></div>")
+		}
+	});
 
 	$( ".col" ).click(function(e) {
 	  col = parseInt(this.className[8]);
@@ -74,10 +89,13 @@ $(document).ready(function(e) {
 function registerClick (row, col) {
 	moveSequence.push(row);
 	moveSequence.push(col);
+	if (moveSequence.length == 2) {
+		if (selectedPieceBelongsToCurrentPlayer(row, col)) {
+		$(document).trigger("grabPiece");
+		}
+	}
 	if (moveSequence.length >= 4) {
-		console.log("Here's the moveSequence: " + moveSequence)
 		if (moveSequence[moveSequence.length - 1] === moveSequence[moveSequence.length - 3] && moveSequence[moveSequence.length - 2] === moveSequence[moveSequence.length - 4]) {
-			console.log("the thing worked")
 			if (isValidOneSquareMove(moveSequence[0], moveSequence[1], moveSequence[2], moveSequence[3])) {
 				attemptMove(moveSequence[0], moveSequence[1], moveSequence[2], moveSequence[3])
 			} else {
@@ -87,23 +105,8 @@ function registerClick (row, col) {
 				} 
 			}
 		moveSequence = [];
-		currentPlayer = enemyPlayer(currentPlayer);	
+		currentPlayer = enemyPlayer(currentPlayer); // There is a problem where Errors still result in the currentPlayer switching. One very hacky way of fixing it would be to change the player when an error occurs, then this would change it back...
+		$( ".mousemove" ).remove();	
 		}  
 	}
 }
-
-
-
-// function registerClick() {
-// 	clicks += 1
-// 	if (clicks === 2) {
-// 	  	console.log("2 clicks; col1 = " + col1 + ", row1 = " + row1 + ", col = " + col + ", row = " + row)
-// 	  	attemptMove(row1, col1, row, col);
-// 	  	clicks = 0;
-// 	} else {
-// 	  	col1 = col;
-// 	  	row1 = row;
-// 	  	console.log("col1this = " + col1 + ", row1this = " + row1);
-// 	}	
-// }
-
