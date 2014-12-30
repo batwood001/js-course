@@ -15,20 +15,27 @@ var $showPieces = function(board) {
 	}	
 }
 
+var redCapped = 0;
+var whiteCapped = 0; //more global variables... meh
+
+var resetGame = function(){
+	games += 1;
+	$(".col").children().remove();
+	$(".gamecounter").html("Games: " + games);
+	$(".turncounter").html("Turns: 0");
+	$(".capturedWhite").children().remove();
+	$(".capturedRed").children().remove();
+	resetBoard();
+	turns = 0;
+	displayBoard();
+	$showPieces(board);	
+}
+
 $(document).ready(function(e) {
 
 	$(".start").click(function(e){
-		games += 1;
 		e.preventDefault();
-		$(".col").children().remove();
-		$(".gamecounter").html("Games: " + games);
-		$(".turncounter").html("Turns: 0");
-		$(".capturedWhite").children().remove();
-		$(".capturedRed").children().remove();
-		resetBoard();
-		turns = 0;
-		displayBoard();
-		$showPieces(board);
+		resetGame();
 	})
 	
 	$(document).on('boardChange', function (e, board) {
@@ -44,8 +51,17 @@ $(document).ready(function(e) {
 		alert(enemyPlayer + " took " + currentPlayer + "'s piece at location " + row + ", " + col + "!");
 		if (currentPlayer === "wht") {
 			$(".capturedWhite").append("<div class='captured red'></div>")
+			redCapped += 1;
 		} else {
 			$(".capturedRed").append("<div class='captured white'></div>")
+			whiteCapped += 1;
+		}
+		if (redCapped === 12) {
+			alert("White wins!");
+			resetGame();
+		} else if (whiteCapped === 12) {
+			alert("Red Wins!");
+			resetGame();
 		}
 		
 	})
@@ -91,22 +107,23 @@ function registerClick (row, col) {
 	moveSequence.push(col);
 	if (moveSequence.length == 2) {
 		if (selectedPieceBelongsToCurrentPlayer(row, col)) {
-		$(document).trigger("grabPiece");
+			$(document).trigger("grabPiece");
 		}
 	}
 	if (moveSequence.length >= 4) {
-		if (moveSequence[moveSequence.length - 1] === moveSequence[moveSequence.length - 3] && moveSequence[moveSequence.length - 2] === moveSequence[moveSequence.length - 4]) {
-			if (isValidOneSquareMove(moveSequence[0], moveSequence[1], moveSequence[2], moveSequence[3])) {
-				attemptMove(moveSequence[0], moveSequence[1], moveSequence[2], moveSequence[3])
+		if (moveSequence[moveSequence.length - 1] === moveSequence[moveSequence.length - 3] && moveSequence[moveSequence.length - 2] === moveSequence[moveSequence.length - 4]) { // if the last two clicks were on the same coordinates
+			if (isValidOneSquareMove(moveSequence[0], moveSequence[1], moveSequence[2], moveSequence[3])) { 																	  // if the first two clicks result in a valid one square move
+				console.log("isValidOneSquareMove ran correctly, despite missing direction arg");
+				attemptMove(moveSequence[0], moveSequence[1], moveSequence[2], moveSequence[3])																					  // attempt the move
 			} else {
-			for (i = 0; i < moveSequence.length - 4; i += 2) {
-				console.log("The moveSequence iterator running")
-				attemptMove(moveSequence[i], moveSequence[i + 1], moveSequence[i + 2], moveSequence[i + 3])
-				} 
-			}
-		moveSequence = [];
+				for (i = 0; i < moveSequence.length - 4; i += 2) {															// else, for each coordinate pair:
+					console.log("The moveSequence iterator running")
+					attemptMove(moveSequence[i], moveSequence[i + 1], moveSequence[i + 2], moveSequence[i + 3])				// attempt the move between this pair and the next one
+				}
+			} 
+		moveSequence = [];							// reset moveSequence
 		currentPlayer = enemyPlayer(currentPlayer); // There is a problem where Errors still result in the currentPlayer switching. One very hacky way of fixing it would be to change the player when an error occurs, then this would change it back...
-		$( ".mousemove" ).remove();	
+		$( ".mousemove" ).remove();					// Maybe a more enduring solution is to check every move before any of them are made (rather than making them sequentially). If all moves are valid, THEN run the move and change the currentplayer. 
 		}  
 	}
 }

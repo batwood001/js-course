@@ -30,7 +30,7 @@ var makeMove = function (row1, col1, row2, col2) {
   // currentPlayer = enemyPlayer(currentPlayer);       // Change players
   console.log(board)
   $(document).trigger("boardChange", [board]);
-  $( "body" ).append("<div>Current Player Is:" + currentPlayer + "</div>")
+  // $( "body" ).append("<div>Current Player Is:" + currentPlayer + "</div>")
   // getMove();
 }
 
@@ -64,6 +64,7 @@ function selectedPieceBelongsToCurrentPlayer(row1, col1) {
   } else {
     console.log("Error: You didn't select one of your pieces");
     $(document).trigger("invalidMove", "You didn't select one of your pieces!")
+    currentPlayer = enemyPlayer(currentPlayer); //this is a hack that will break the Console UI version, but make the GUI version work (for now).
     moveSequence = [];
     return false
   }
@@ -76,6 +77,7 @@ function nextPositionIsEmpty(row2, col2) {
   } else {
     console.log("Error: That position is not empty")
     $(document).trigger("invalidMove", "That position is not empty")
+    currentPlayer = enemyPlayer(currentPlayer); //this is a hack that will break the Console UI version, but make the GUI version work (for now).
     moveSequence = [];
     return false
   }
@@ -117,6 +119,7 @@ function isValidTwoSquareMove(row1, col1, row2, col2, direction) {
     console.log("Error: Not a valid aggressive move");
     $(document).trigger("invalidMove", "Not a valid aggressive move")
     moveSequence = [];
+    currentPlayer = enemyPlayer(currentPlayer); //this is a hack that will break the Console UI version, but make the GUI version work (for now).
     return false
   }
 }
