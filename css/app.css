@@ -55,3 +55,21 @@
   position: absolute;
   pointer-events: none;
 }
+
+.redKing {
+  margin: 5px;
+  width: 40px;
+  height: 40px;
+  display: inline-block;
+  border-radius: 20%;
+  background-color: red;
+}
+
+.whiteKing {
+  margin: 5px;
+  width: 40px;
+  height: 40px;
+  display: inline-block;
+  border-radius: 20%;
+  background-color: white;
+}

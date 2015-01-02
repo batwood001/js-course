@@ -10,6 +10,10 @@ var $showPieces = function(board) {
 				$(".row-" + numToChar[row] + " .col-" + col).append("<div class=whitepiece></div")
 			} else if (board[row][col] === "red") {
 				$(".row-" + numToChar[row] + " .col-" + col).append("<div class=redpiece></div")
+			} else if (board[row][col] === "whtK") {
+				$(".row-" + numToChar[row] + " .col-" + col).append("<div class=whiteKing></div")
+			} else if (board[row][col] === "redK") {
+				$(".row-" + numToChar[row] + " .col-" + col).append("<div class=redKing></div")
 			}
 		}
 	}	
@@ -27,6 +31,8 @@ var resetGame = function(){
 	$(".capturedRed").children().remove();
 	resetBoard();
 	turns = 0;
+	redCapped = 0;
+	whiteCapped = 0;
 	displayBoard();
 	$showPieces(board);	
 }
@@ -80,10 +86,15 @@ $(document).ready(function(e) {
 
 	$(document).on("grabPiece", function (e, row, col) {
 		e.preventDefault();
-		if (currentPlayer === "wht") {
+		if (board[row][col] === "wht") {
+			console.log("you selected a white piece")
 			$( "body" ).append("<div class='mousemove whitepiece'></div>")
-		} else {
+		} else if (board[row][col] === "red") {
 			$( "body" ).append("<div class='mousemove redpiece'></div>")
+		} else if (board[row][col] === "whtK") {
+			$( "body" ).append("<div class='mousemove whiteKing'></div>")
+		} else if (board[row][col] === "redK") {
+			$( "body" ).append("<div class='mousemove redKing'></div>")
 		}
 	});
 
@@ -103,27 +114,107 @@ $(document).ready(function(e) {
 
 
 function registerClick (row, col) {
+	console.log("the current moveSequence is: " + moveSequence)
 	moveSequence.push(row);
 	moveSequence.push(col);
 	if (moveSequence.length == 2) {
 		if (selectedPieceBelongsToCurrentPlayer(row, col)) {
-			$(document).trigger("grabPiece");
+			$(document).trigger("grabPiece", [row, col]);
+		} else {
+			console.log("Error: you didn't select one of your pieces");
+			alert("You didn't select one of your pieces");
+			moveSequence = [];
+			$( ".mousemove" ).remove();
 		}
 	}
-	if (moveSequence.length >= 4) {
-		if (moveSequence[moveSequence.length - 1] === moveSequence[moveSequence.length - 3] && moveSequence[moveSequence.length - 2] === moveSequence[moveSequence.length - 4]) { // if the last two clicks were on the same coordinates
-			if (isValidOneSquareMove(moveSequence[0], moveSequence[1], moveSequence[2], moveSequence[3])) { 																	  // if the first two clicks result in a valid one square move
-				console.log("isValidOneSquareMove ran correctly, despite missing direction arg");
-				attemptMove(moveSequence[0], moveSequence[1], moveSequence[2], moveSequence[3])																					  // attempt the move
+	if (moveSequence.length > 1 && (moveSequence[moveSequence.length - 1] === moveSequence[moveSequence.length - 3] && moveSequence[moveSequence.length - 2] === moveSequence[moveSequence.length - 4])) { // if there are actually coordinates, and if the last two clicks were on the same coordinates
+		if (moveSequence.length == 6) { 																																								   // if it is a single (non n > 1 -- jump) move 
+			console.log("the moveSequence is 6 characters long")
+			if (attemptMove(moveSequence[0], moveSequence[1], moveSequence[2], moveSequence[3]) == "nonaggressive") {															  												// if the first two clicks actually result in a valid one square move
+				console.log("attempting move of first two clicks; nonaggressive");
+				makeMove(moveSequence[0], moveSequence[1], moveSequence[2], moveSequence[3]);
+				moveSequence = [];
+				currentPlayer = enemyPlayer(currentPlayer);
+				$( ".mousemove" ).remove();
+			} else if (attemptMove(moveSequence[0], moveSequence[1], moveSequence[2], moveSequence[3]) == "aggressive") {
+				console.log("attempting move of first two clicks; aggressive");
+				removePiece(moveSequence[0], moveSequence[1], moveSequence[2], moveSequence[3]);
+				makeMove(moveSequence[0], moveSequence[1], moveSequence[2], moveSequence[3]);
+				moveSequence = [];
+				currentPlayer = enemyPlayer(currentPlayer);
+				$( ".mousemove" ).remove();
 			} else {
-				for (i = 0; i < moveSequence.length - 4; i += 2) {															// else, for each coordinate pair:
-					console.log("The moveSequence iterator running")
-					attemptMove(moveSequence[i], moveSequence[i + 1], moveSequence[i + 2], moveSequence[i + 3])				// attempt the move between this pair and the next one
+				moveSequence = [];
+				$( ".mousemove" ).remove();
+			}																				  
+		} else {
+			// if (testAllMoves(moveSequence)) {
+			// var numAggressiveMoves = 0;
+			var tester = 0;
+			for (i = 0; i < moveSequence.length - 4; i += 2) {															// else, for each coordinate pair:
+				console.log("The moveSequence iterator running")
+				if (attemptMove(moveSequence[i], moveSequence[i + 1], moveSequence[i + 2], moveSequence[i + 3]) === "aggressive") {
+					removePiece(moveSequence[i], moveSequence[i + 1], moveSequence[i + 2], moveSequence[i + 3]);
+					makeMove(moveSequence[i], moveSequence[i + 1], moveSequence[i + 2], moveSequence[i + 3]);
+					tester += 1
 				}
-			} 
-		moveSequence = [];							// reset moveSequence
-		currentPlayer = enemyPlayer(currentPlayer); // There is a problem where Errors still result in the currentPlayer switching. One very hacky way of fixing it would be to change the player when an error occurs, then this would change it back...
-		$( ".mousemove" ).remove();					// Maybe a more enduring solution is to check every move before any of them are made (rather than making them sequentially). If all moves are valid, THEN run the move and change the currentplayer. 
-		}  
-	}
+			}
+				// } else {
+				// 	moveSequence = [];
+				// 	// currentPlayer = enemyPlayer(currentPlayer);
+				// 	console.log("Error--one move didn't register correctly")
+				// 	$( ".mousemove" ).remove();
+				// 	break
+				// }
+			if (tester > 1) {
+				moveSequence = [];
+				currentPlayer = enemyPlayer(currentPlayer);
+				$( ".mousemove" ).remove();		
+			} else {
+				moveSequence = [];
+				$( ".mousemove" ).remove();
+			}		
+			// }
+					// removePiece(moveSequence[i], moveSequence[i + 1], moveSequence[i + 2], moveSequence[i + 3]);
+					// makeMove(moveSequence[i], moveSequence[i + 1], moveSequence[i + 2], moveSequence[i + 3]);
+					// tester += 1;
+					// removePiece(vertMove(row1, 1, direction), col1 + 1);
+			}
+			// tester.forEach(function(test){
+			// 	if (test === "aggressive") {
+			// 		numAggressiveMoves += 1
+			// 	}
+			// })
+			// console.log("the tester array is: " + tester)
+			// if (numAggressiveMoves === tester.length) {
+			// 	for (i = 0; i < moveSequence.length - 4; i += 2) {
+			// 		removePiece(moveSequence[i], moveSequence[i + 1], moveSequence[i + 2], moveSequence[i + 3]);
+			// 		makeMove(moveSequence[i], moveSequence[i + 1], moveSequence[i + 2], moveSequence[i + 3]);
+			// 	}
+			// 	moveSequence = [];
+			// 	currentPlayer = enemyPlayer(currentPlayer);
+			// 	$( ".mousemove" ).remove();
+			// } else {
+			// 	alert("One of the moves you made is invalid!")
+			// 	moveSequence = [];
+			// 	$( ".mousemove" ).remove();
+			// }
+		} 
+	}  
+
+
+var testAllMoves = function(moveSequence) {
+	console.log("testing all moves in moveSequence" + moveSequence)
+    var success = 0;
+    for (i = 0; i < moveSequence.length - 4; i+= 2) {
+        if (attemptMove(moveSequence[i], moveSequence[i + 1], moveSequence[i + 2], moveSequence[i + 3])) { 
+        	success += 1;
+        	console.log("move # " + i + "is valid") 
+        }
+    }
+    if (success == ((moveSequence.length / 2) - 1)) { 
+        return true
+    } else {
+        return false
+    }
 }
