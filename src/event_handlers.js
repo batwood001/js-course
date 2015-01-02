@@ -148,8 +148,6 @@ function registerClick (row, col) {
 				$( ".mousemove" ).remove();
 			}																				  
 		} else {
-			// if (testAllMoves(moveSequence)) {
-			// var numAggressiveMoves = 0;
 			var tester = 0;
 			for (i = 0; i < moveSequence.length - 4; i += 2) {															// else, for each coordinate pair:
 				console.log("The moveSequence iterator running")
@@ -159,13 +157,7 @@ function registerClick (row, col) {
 					tester += 1
 				}
 			}
-				// } else {
-				// 	moveSequence = [];
-				// 	// currentPlayer = enemyPlayer(currentPlayer);
-				// 	console.log("Error--one move didn't register correctly")
-				// 	$( ".mousemove" ).remove();
-				// 	break
-				// }
+
 			if (tester > 0) {
 				moveSequence = [];
 				currentPlayer = enemyPlayer(currentPlayer);
@@ -174,47 +166,8 @@ function registerClick (row, col) {
 				moveSequence = [];
 				$( ".mousemove" ).remove();
 			}		
-			// }
-					// removePiece(moveSequence[i], moveSequence[i + 1], moveSequence[i + 2], moveSequence[i + 3]);
-					// makeMove(moveSequence[i], moveSequence[i + 1], moveSequence[i + 2], moveSequence[i + 3]);
-					// tester += 1;
-					// removePiece(vertMove(row1, 1, direction), col1 + 1);
-			}
-			// tester.forEach(function(test){
-			// 	if (test === "aggressive") {
-			// 		numAggressiveMoves += 1
-			// 	}
-			// })
-			// console.log("the tester array is: " + tester)
-			// if (numAggressiveMoves === tester.length) {
-			// 	for (i = 0; i < moveSequence.length - 4; i += 2) {
-			// 		removePiece(moveSequence[i], moveSequence[i + 1], moveSequence[i + 2], moveSequence[i + 3]);
-			// 		makeMove(moveSequence[i], moveSequence[i + 1], moveSequence[i + 2], moveSequence[i + 3]);
-			// 	}
-			// 	moveSequence = [];
-			// 	currentPlayer = enemyPlayer(currentPlayer);
-			// 	$( ".mousemove" ).remove();
-			// } else {
-			// 	alert("One of the moves you made is invalid!")
-			// 	moveSequence = [];
-			// 	$( ".mousemove" ).remove();
-			// }
-		} 
-	}  
 
+		}
 
-var testAllMoves = function(moveSequence) {
-	console.log("testing all moves in moveSequence" + moveSequence)
-    var success = 0;
-    for (i = 0; i < moveSequence.length - 4; i+= 2) {
-        if (attemptMove(moveSequence[i], moveSequence[i + 1], moveSequence[i + 2], moveSequence[i + 3])) { 
-        	success += 1;
-        	console.log("move # " + i + "is valid") 
-        }
-    }
-    if (success == ((moveSequence.length / 2) - 1)) { 
-        return true
-    } else {
-        return false
-    }
-}
+	} 
+}  
