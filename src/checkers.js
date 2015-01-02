@@ -57,23 +57,23 @@ var attemptMove = function (row1, col1, row2, col2) {
   if (selectedPieceBelongsToCurrentPlayer(row1, col1)) {
     if (nextPositionIsEmpty(row2, col2)) {
       if (board[row1][col1] === "wht") {
-        if (tryMove(row1, col1, row2, col2, "down")) {
-          return (tryMove(row1, col1, row2, col2, "down"))
+        if (isValidMove(row1, col1, row2, col2, "down")) {
+          return (isValidMove(row1, col1, row2, col2, "down"))
         } else {
           return false
         }
       } else if (board[row1][col1] === "red") {
-        if (tryMove(row1, col1, row2, col2, "up")) {         // if the current player is red
-          return (tryMove(row1, col1, row2, col2, "up"))
+        if (isValidMove(row1, col1, row2, col2, "up")) {
+          return (isValidMove(row1, col1, row2, col2, "up"))
         } else {
           return false
         }
       } else if (board[row1][col1] === "whtK" || board[row1][col1] === "redK") {
         console.log("YOU ARE MOVING A KINGED PIECE")
-        if (tryMove(row1, col1, row2, col2, "up")) {
-          return (tryMove(row1, col1, row2, col2, "up"))
-        } else if (tryMove(row1, col1, row2, col2, "down")) {
-          return (tryMove(row1, col1, row2, col2, "down"))
+        if (isValidMove(row1, col1, row2, col2, "up")) {
+          return (isValidMove(row1, col1, row2, col2, "up"))
+        } else if (isValidMove(row1, col1, row2, col2, "down")) {
+          return (isValidMove(row1, col1, row2, col2, "down"))
         } else {
           return false
         }
@@ -119,7 +119,7 @@ function isValidOneSquareMove(row1, col1, row2, col2, direction) {
     console.log("valid non-aggressive downward move");
     return true
   } else {
-    console.log("Error: Not a valid non-aggressive move");
+    console.log("Not a valid non-aggressive move");
     return false
   }
 }
@@ -141,7 +141,7 @@ function isValidTwoSquareMove(row1, col1, row2, col2, direction) {
   }
 }
 
-function tryMove(row1, col1, row2, col2, direction) {
+function isValidMove(row1, col1, row2, col2, direction) {
   if (isValidOneSquareMove(row1, col1, row2, col2, direction)) {
     return "nonaggressive"
   } else if (isValidTwoSquareMove(row1, col1, row2, col2, direction) === "valid right move") {
@@ -151,4 +151,19 @@ function tryMove(row1, col1, row2, col2, direction) {
   } else {
     return false
   }
+}
+
+var resetGame = function(){
+  games += 1;
+  $(".col").children().remove();
+  $(".gamecounter").html("Games: " + games);
+  $(".turncounter").html("Turns: 0");
+  $(".capturedWhite").children().remove();
+  $(".capturedRed").children().remove();
+  resetBoard();
+  turns = 0;
+  redCapped = 0;
+  whiteCapped = 0;
+  displayBoard();
+  $showPieces(board); 
 }
