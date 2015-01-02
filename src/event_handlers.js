@@ -138,8 +138,8 @@ function registerClick (row, col) {
 				$( ".mousemove" ).remove();
 			} else if (attemptMove(moveSequence[0], moveSequence[1], moveSequence[2], moveSequence[3]) == "aggressive") {
 				console.log("attempting move of first two clicks; aggressive");
-				removePiece(moveSequence[0], moveSequence[1], moveSequence[2], moveSequence[3]);
 				makeMove(moveSequence[0], moveSequence[1], moveSequence[2], moveSequence[3]);
+				removePiece(moveSequence[0], moveSequence[1], moveSequence[2], moveSequence[3]);
 				moveSequence = [];
 				currentPlayer = enemyPlayer(currentPlayer);
 				$( ".mousemove" ).remove();
@@ -154,8 +154,8 @@ function registerClick (row, col) {
 			for (i = 0; i < moveSequence.length - 4; i += 2) {															// else, for each coordinate pair:
 				console.log("The moveSequence iterator running")
 				if (attemptMove(moveSequence[i], moveSequence[i + 1], moveSequence[i + 2], moveSequence[i + 3]) === "aggressive") {
-					removePiece(moveSequence[i], moveSequence[i + 1], moveSequence[i + 2], moveSequence[i + 3]);
 					makeMove(moveSequence[i], moveSequence[i + 1], moveSequence[i + 2], moveSequence[i + 3]);
+					removePiece(moveSequence[i], moveSequence[i + 1], moveSequence[i + 2], moveSequence[i + 3]);
 					tester += 1
 				}
 			}
@@ -166,7 +166,7 @@ function registerClick (row, col) {
 				// 	$( ".mousemove" ).remove();
 				// 	break
 				// }
-			if (tester > 1) {
+			if (tester > 0) {
 				moveSequence = [];
 				currentPlayer = enemyPlayer(currentPlayer);
 				$( ".mousemove" ).remove();		

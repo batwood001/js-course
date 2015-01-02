@@ -38,18 +38,10 @@ var makeMove = function (row1, col1, row2, col2) {
     board[row2][col2] = currentPlayer;
   }
   board[row1][col1] = " X ";
-  // currentPlayer = enemyPlayer(currentPlayer);       // Change players
+
   displayBoard()
   $(document).trigger("boardChange", [board]);
-  // $( "body" ).append("<div>Current Player Is:" + currentPlayer + "</div>")
-  // getMove();
 }
-
-// var removePiece = function (row, col) {
-//   console.log("removePiece called on row " + row + ", column " + col)
-//   board[row][col] = " X ";
-//   $(document).trigger("pieceTaken", [currentPlayer, enemyPlayer(currentPlayer), row, col]);
-// }
 
 var removePiece = function (row1, col1, row2, col2) {
   var row = (row1 + row2) / 2
@@ -57,6 +49,7 @@ var removePiece = function (row1, col1, row2, col2) {
   console.log("removePiece called on row " + row + ", column " + col)
   board[row][col] = " X ";
   $(document).trigger("pieceTaken", [currentPlayer, enemyPlayer(currentPlayer), row, col]);
+  $(document).trigger("boardChange", [board]);
 }
 
 var attemptMove = function (row1, col1, row2, col2) {
@@ -97,13 +90,8 @@ var attemptMove = function (row1, col1, row2, col2) {
 
 function selectedPieceBelongsToCurrentPlayer(row1, col1) {
   if (board[row1][col1] === currentPlayer || board[row1][col1] === currentPlayer + "K") {
-    // console.log("current player is white; white piece selected");
     return true
   } else {
-    // console.log("Error: You didn't select one of your pieces");
-    // $(document).trigger("invalidMove", "You didn't select one of your pieces!")
-    // currentPlayer = enemyPlayer(currentPlayer); //this is a hack that will break the Console UI version, but make the GUI version work (for now).
-    // moveSequence = [];
     return false
   }
 }
@@ -114,9 +102,6 @@ function nextPositionIsEmpty(row2, col2) {
     return true
   } else {
     console.log("Error: That position is not empty")
-    // $(document).trigger("invalidMove", "That position is not empty")
-    // currentPlayer = enemyPlayer(currentPlayer); //this is a hack that will break the Console UI version, but make the GUI version work (for now).
-    // moveSequence = [];
     return false
   }
 }
@@ -151,10 +136,7 @@ function isValidTwoSquareMove(row1, col1, row2, col2, direction) {
       }
     }
   } else {
-    console.log("Error: Not a valid aggressive move");
-    // $(document).trigger("invalidMove", "Not a valid aggressive move")
-    // moveSequence = [];
-    // currentPlayer = enemyPlayer(currentPlayer); //this is a hack that will break the Console UI version, but make the GUI version work (for now).
+    console.log("Not a valid aggressive move");
     return false
   }
 }
@@ -163,12 +145,8 @@ function tryMove(row1, col1, row2, col2, direction) {
   if (isValidOneSquareMove(row1, col1, row2, col2, direction)) {
     return "nonaggressive"
   } else if (isValidTwoSquareMove(row1, col1, row2, col2, direction) === "valid right move") {
-    // removePiece(vertMove(row1, 1, direction), col1 + 1);
-    // makeMove(row1, col1, row2, col2);
     return "aggressive"
   } else if (isValidTwoSquareMove(row1, col1, row2, col2, direction) === "valid left move") {
-    // removePiece(vertMove(row1, 1, direction), col1 - 1)
-    // makeMove(row1, col1, row2, col2); 
     return "aggressive"
   } else {
     return false
