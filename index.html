@@ -1,0 +1,18 @@
+<html>
+<head>
+</head>
+<body>
+<div id="app"></div>
+
+<script src="vendor/mithril.min/mithril.js" type="text/javascript"></script>
+<script src="src/todo.js" type="text/javascript"></script>
+<script type="text/javascript">
+	var appDiv = document.getElementById('app')
+
+	m.module(appDiv, {
+		controller: TodoApp.controller,
+		view: TodoApp.view
+	})
+</script>
+</body>
+</html>
