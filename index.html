@@ -7,6 +7,12 @@
 <script src="vendor/mithril.min/mithril.js" type="text/javascript"></script>
 <script src="src/todo.js" type="text/javascript"></script>
 <script type="text/javascript">
+	TodoApp.vm.todos([
+		{id: 100, name: "Task One", isComplete: false},
+		{id: 101, name: "Task Two", isComplete: true},
+		{id: 102, name: "Task Three", isComplete: false}
+	])
+
 	var appDiv = document.getElementById('app')
 
 	m.module(appDiv, {
